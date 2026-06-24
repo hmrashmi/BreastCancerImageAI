@@ -1,0 +1,1024 @@
+/* 🎨 AI-Based Breast Cancer Detection Design System */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    /* Light Mode Variables (Default) */
+    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --card-bg: rgba(255, 255, 255, 0.75);
+    --card-border: 1px solid rgba(255, 255, 255, 0.45);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    
+    --accent-color: #6366f1;
+    --accent-glow: rgba(99, 102, 241, 0.3);
+    --accent-hover: #4f46e5;
+    
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --input-border: #cbd5e1;
+    --input-focus: #6366f1;
+    
+    --shadow-color: rgba(31, 38, 135, 0.08);
+    --shadow: 0 8px 32px 0 var(--shadow-color);
+    
+    --spinner-track: #e2e8f0;
+    --spinner-fill: #6366f1;
+    
+    /* Definitions Colors */
+    --benign-bg: rgba(24, 187, 84, 0.12);
+    --benign-text: #15803d;
+    --benign-border: rgba(21, 128, 61, 0.2);
+    --malignant-bg: rgba(239, 68, 68, 0.12);
+    --malignant-text: #b91c1c;
+    --malignant-border: rgba(185, 28, 28, 0.2);
+    
+    /* Step Indicator Colors */
+    --step-inactive: #94a3b8;
+    --step-active: #6366f1;
+    --step-line: #cbd5e1;
+    
+    /* Card Hover Lift */
+    --hover-translate: translateY(-4px);
+    --hover-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
+}
+
+[data-theme="dark"] {
+    /* Dark Mode Variables */
+    --bg-gradient: linear-gradient(135deg, #090d16 0%, #111327 100%);
+    --card-bg: rgba(17, 20, 34, 0.55);
+    --card-border: 1px solid rgba(255, 255, 255, 0.07);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    
+    --accent-color: #818cf8;
+    --accent-glow: rgba(129, 140, 248, 0.4);
+    --accent-hover: #6366f1;
+    
+    --input-bg: rgba(15, 23, 42, 0.8);
+    --input-border: rgba(255, 255, 255, 0.12);
+    --input-focus: #818cf8;
+    
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --shadow: 0 12px 36px 0 var(--shadow-color);
+    
+    --spinner-track: #1e293b;
+    --spinner-fill: #818cf8;
+    
+    /* Definitions Colors */
+    --benign-bg: rgba(74, 222, 128, 0.08);
+    --benign-text: #4ade80;
+    --benign-border: rgba(74, 222, 128, 0.15);
+    --malignant-bg: rgba(248, 113, 113, 0.08);
+    --malignant-text: #f87171;
+    --malignant-border: rgba(248, 113, 113, 0.15);
+    
+    /* Step Indicator Colors */
+    --step-inactive: #334155;
+    --step-active: #818cf8;
+    --step-line: #1e293b;
+    
+    /* Card Hover Lift */
+    --hover-translate: translateY(-4px);
+    --hover-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body {
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* 🌓 Theme Toggle Container & Button */
+.theme-toggle-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: -15px;
+}
+
+.install-app-btn {
+    background: linear-gradient(135deg, var(--accent-color) 0%, #4f46e5 100%);
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9em;
+    font-weight: 600;
+    box-shadow: 0 4px 15px var(--accent-glow);
+    transform: scale(1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.install-app-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.theme-toggle-btn {
+    background: var(--card-bg);
+    border: var(--card-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    transform: scale(1);
+    transition: transform 0.2s ease, background 0.3s;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.08);
+    border-color: var(--accent-color);
+}
+
+.toggle-icon {
+    font-size: 1.3em;
+}
+
+/* 🏥 Header block */
+.header {
+    background: var(--card-bg);
+    border: var(--card-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 35px 30px;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.header h1 {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.header p {
+    font-size: 1.05em;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* 🚥 Stepper Navigation */
+.stepper {
+    background: var(--card-bg);
+    border: var(--card-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    z-index: 2;
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--step-inactive);
+    color: white;
+    font-weight: 600;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.step-label {
+    font-size: 0.85em;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.step-line {
+    height: 2px;
+    background: var(--step-line);
+    flex-grow: 1;
+    margin: 0 -20px;
+    z-index: 1;
+}
+
+.step.active .step-number {
+    background: var(--step-active);
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.step.active .step-label {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.step.completed .step-number {
+    background: #10b981;
+}
+
+/* 🚀 Main Content Sections */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step-section {
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 📋 Step 1 Form Card */
+.form-card {
+    background: var(--card-bg);
+    border: var(--card-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 35px;
+    box-shadow: var(--shadow);
+}
+
+.form-card h2 {
+    color: var(--accent-color);
+    font-size: 1.6em;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.form-subtitle {
+    font-size: 0.95em;
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+label {
+    display: block;
+    font-size: 0.9em;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.required {
+    color: #ef4444;
+    margin-left: 2px;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-primary);
+    font-size: 1em;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2724%27%20height%3D%2724%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%236366f1%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%276%209%2012%2015%2018%209%27%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* 📤 Step 2 Upload box styles */
+.upload-box {
+    background: var(--card-bg);
+    border: var(--card-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 35px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.upload-box h2 {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 6px;
+}
+
+.section-desc {
+    font-size: 0.95em;
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+}
+
+.upload-area {
+    border: 2.5px dashed var(--accent-color);
+    border-radius: 18px;
+    padding: 50px 30px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.04), rgba(129, 140, 248, 0.04));
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    margin-bottom: 25px;
+}
+
+.upload-area:hover {
+    border-color: var(--accent-hover);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.09), rgba(129, 140, 248, 0.09));
+    transform: scale(1.01);
+}
+
+.upload-icon {
+    font-size: 3em;
+    margin-bottom: 12px;
+}
+
+.upload-area h2 {
+    font-size: 1.35em;
+    margin-bottom: 8px;
+}
+
+.upload-area p {
+    color: var(--text-secondary);
+    font-size: 0.92em;
+    margin-bottom: 12px;
+}
+
+.upload-btn {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+    color: white;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px var(--accent-glow);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px var(--accent-glow);
+}
+
+.file-info {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* 🖼️ Upload Preview Box */
+.preview-section {
+    background: var(--card-bg);
+    border: var(--card-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.preview-container h3 {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+}
+
+#previewImage {
+    max-width: 100%;
+    max-height: 280px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* 📊 Step 3 Results Container */
+.results-section {
+    background: var(--card-bg);
+    border: var(--card-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 35px;
+    box-shadow: var(--shadow);
+}
+
+.results-container h2 {
+    color: var(--accent-color);
+    font-size: 1.8em;
+    font-weight: 700;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.result-card {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.03), rgba(129, 140, 248, 0.03));
+    border-left: 4px solid var(--accent-color);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.result-card:hover {
+    transform: var(--hover-translate);
+    box-shadow: var(--hover-shadow);
+}
+
+.result-card h3 {
+    color: var(--accent-color);
+    font-size: 1.15em;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+/* 👤 Patient Profile Summary Card */
+.patient-summary-card {
+    border-left-color: #3b82f6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(59, 130, 246, 0.05));
+}
+
+.patient-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-item.full-width {
+    grid-column: span 2;
+}
+
+.detail-label {
+    font-size: 0.85em;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.detail-val {
+    font-size: 1.05em;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* 📊 Classification style overrides */
+.classification {
+    font-size: 1.35em;
+    font-weight: 700;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+.classification.benign {
+    background: var(--benign-bg);
+    color: var(--benign-text);
+    border-color: var(--benign-border);
+}
+
+.classification.malignant {
+    background: var(--malignant-bg);
+    color: var(--malignant-text);
+    border-color: var(--malignant-border);
+}
+
+/* 📉 Confidence & progress card style */
+.confidence-box {
+    text-align: center;
+}
+
+.confidence-value {
+    font-size: 2.2em;
+    font-weight: 800;
+    color: var(--accent-color);
+    margin-bottom: 12px;
+}
+
+.confidence-bar {
+    width: 100%;
+    height: 16px;
+    background: var(--spinner-track);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.confidence-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+    border-radius: 20px;
+    width: 0%;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 🔴 Risk cards styling */
+.risk-card {
+    border-left-color: #ef4444;
+}
+
+.risk-box {
+    text-align: center;
+}
+
+.risk-percentage {
+    font-size: 2.6em;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.risk-level {
+    font-size: 1.1em;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding: 6px 18px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.risk-description {
+    font-size: 0.95em;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* 📋 Detailed analysis columns */
+.probability-details {
+    display: flex;
+    justify-content: space-around;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.prob-item {
+    flex: 1;
+    min-width: 180px;
+    padding: 12px 15px;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.prob-label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.88em;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.prob-value {
+    display: block;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+/* 📚 Medical definitions layout styling */
+.definitions-card {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.02) 0%, rgba(129, 140, 248, 0.02) 100%);
+}
+
+.definitions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.definition-item {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.definition-item h4 {
+    font-size: 1.05em;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.definition-item p {
+    font-size: 0.88em;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+/* ⏳ Loading Spinner Container */
+.loading-spinner {
+    text-align: center;
+    padding: 50px 20px;
+    background: var(--card-bg);
+    border: var(--card-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+.spinner {
+    border: 3.5px solid var(--spinner-track);
+    border-top: 3.5px solid var(--spinner-fill);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-spinner p {
+    color: var(--accent-color);
+    font-size: 1.05em;
+    font-weight: 600;
+}
+
+/* ❌ Error panel card */
+.error-message {
+    background: var(--malignant-bg);
+    color: var(--malignant-text);
+    border-color: var(--malignant-border);
+    border-left: 4px solid #ef4444;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+/* ⚙️ Buttons / Interactivity */
+.action-buttons,
+.step-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 11px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+    color: white;
+    box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px var(--accent-glow);
+}
+
+.btn-secondary {
+    background: var(--input-bg);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+}
+
+.btn-secondary:hover {
+    background: var(--accent-color);
+    color: white;
+    box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* 🚪 Footer block */
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--text-secondary);
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.footer p {
+    margin: 6px 0;
+    font-size: 0.85em;
+    line-height: 1.4;
+}
+
+/* 📱 Responsive Adjustments */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        gap: 15px;
+    }
+
+    .header {
+        padding: 22px 18px;
+        border-radius: 16px;
+    }
+
+    .header h1 {
+        font-size: 1.35em;
+        line-height: 1.3;
+    }
+
+    .header p {
+        font-size: 0.88em;
+    }
+
+    .stepper {
+        padding: 14px 10px;
+        border-radius: 16px;
+    }
+
+    .step-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.82em;
+    }
+
+    .step-label {
+        font-size: 0.72em;
+    }
+
+    .step-line {
+        margin: 0 -10px;
+    }
+
+    .form-card,
+    .upload-box,
+    .results-section,
+    .preview-section {
+        padding: 20px 16px;
+        border-radius: 18px;
+    }
+
+    .form-card h2,
+    .upload-box h2 {
+        font-size: 1.25em;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        padding: 14px 14px;
+        font-size: 16px; /* Prevents iOS zoom on focus */
+        border-radius: 10px;
+    }
+
+    label {
+        font-size: 0.88em;
+    }
+
+    .upload-area {
+        padding: 30px 16px;
+        border-radius: 14px;
+    }
+
+    .upload-area h2 {
+        font-size: 1.15em;
+    }
+
+    .upload-icon {
+        font-size: 2.5em;
+    }
+
+    #previewImage {
+        max-height: 200px;
+    }
+
+    .results-container h2 {
+        font-size: 1.35em;
+        margin-bottom: 18px;
+    }
+
+    .result-card {
+        padding: 16px 14px;
+        border-radius: 12px;
+        margin-bottom: 14px;
+    }
+
+    .result-card h3 {
+        font-size: 1em;
+    }
+
+    .patient-details-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .detail-label {
+        font-size: 0.78em;
+    }
+
+    .detail-val {
+        font-size: 0.92em;
+    }
+
+    .classification {
+        font-size: 1.1em;
+        padding: 14px 10px;
+    }
+
+    .confidence-value {
+        font-size: 1.8em;
+    }
+
+    .risk-percentage {
+        font-size: 2em;
+    }
+
+    .risk-level {
+        font-size: 0.95em;
+        padding: 5px 14px;
+    }
+
+    .probability-details {
+        flex-direction: column;
+    }
+
+    .prob-item {
+        min-width: unset;
+    }
+
+    .definitions {
+        grid-template-columns: 1fr;
+    }
+
+    .definition-item {
+        padding: 14px;
+    }
+
+    .action-buttons,
+    .step-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 13px 20px;
+        font-size: 0.92em;
+    }
+
+    .theme-toggle-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .toggle-icon {
+        font-size: 1.15em;
+    }
+
+    .footer {
+        padding: 15px;
+    }
+
+    .footer p {
+        font-size: 0.78em;
+    }
+}
+
+/* Extra small phones (under 400px) */
+@media (max-width: 400px) {
+    body {
+        padding: 6px;
+    }
+
+    .header h1 {
+        font-size: 1.15em;
+    }
+
+    .header {
+        padding: 18px 14px;
+    }
+
+    .form-card,
+    .upload-box,
+    .results-section {
+        padding: 16px 12px;
+    }
+
+    .patient-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .step-label {
+        font-size: 0.65em;
+    }
+
+    .step-number {
+        width: 24px;
+        height: 24px;
+        font-size: 0.75em;
+    }
+
+    .results-container h2 {
+        font-size: 1.15em;
+    }
+}

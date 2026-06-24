@@ -1,0 +1,39 @@
+# Virtual environments
+.venv/
+tfenv/
+venv/
+env/
+
+# Model file (too large for GitHub — 177MB exceeds 100MB limit)
+breast_cancer_cnn.h5
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Dataset (large image files)
+dataset/
+
+# Uploads
+uploads/
+
+# Node modules (mobile app)
+BreastCancerImageAI-Mobile/node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Gemini
+.gemini/
+.agents/
